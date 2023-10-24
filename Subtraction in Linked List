@@ -1,0 +1,68 @@
+Given two linked lists that represent two large positive numbers. The task is to subtract the given two numbers represented by the linked list. Subtract the smaller from the larger one.
+
+Example 1:
+
+Input:
+L1 = 1->0->0
+L2 = 1->2
+Output: 8 8
+Explanation:  12 subtracted from 100
+gives us 88 as result.
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def reverseLinkedList(head):
+    prev = None
+    current = head
+    while current:
+        next_node = current.next
+        current.next = prev
+        prev = current
+        current = next_node
+    return prev
+
+def subtractLinkedLists(L1, L2):
+    L1 = reverseLinkedList(L1)
+    L2 = reverseLinkedList(L2)
+
+    result = ListNode(0)
+    current = result
+    carry = 0
+
+    while L1 or L2:
+        val1 = L1.val if L1 else 0
+        val2 = L2.val if L2 else 0
+        diff = val1 - val2 - carry
+
+        if diff < 0:
+            carry = 1
+            diff += 10
+        else:
+            carry = 0
+
+        current.next = ListNode(diff)
+        current = current.next
+
+        if L1:
+            L1 = L1.next
+        if L2:
+            L2 = L2.next
+
+    return reverseLinkedList(result.next)
+
+def linkedListToNumber(head):
+    num = 0
+    while head:
+        num = num * 10 + head.val
+        head = head.next
+    return num
+
+# Example usage:
+L1 = ListNode(1, ListNode(0, ListNode(0)))
+L2 = ListNode(1, ListNode(2))
+result = subtractLinkedLists(L1, L2)
+num = linkedListToNumber(result)
+print(num)  # Output: 88
